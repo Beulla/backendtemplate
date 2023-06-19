@@ -11,15 +11,15 @@ const schema=Joi.object({
     email: Joi.string().required(),
     password: Joi.string().min(8).max(120).required()
 })
-exports.register=(req,res)=>{
+exports.register=async(req,res)=>{
     const {username,password,email}=req.body
     const validationResults=userSchema.validate(req.body)
     
         if (validationResults.error) {
           console.error('Validation error:', error.details);
         } else {
-            let user=User.findOne({email:email})
-            if(user.username){
+            let user=await User.findOne({email:email})
+            if(user){
                 res.status(200).send("user already exists")
             }
             else{
@@ -30,7 +30,7 @@ exports.register=(req,res)=>{
                     email,
                     password:hashedPassword
                 })
-                newUser.save().then(()=>{
+                await newUser.save().then(()=>{
                     res.status(200).send("account created successfully")
                 })
                 .catch((err)=>{
@@ -43,13 +43,13 @@ exports.register=(req,res)=>{
 
 exports.login=async(req,res)=>{
     const {email,password}=req.body
-    
     const validation=schema.validate(req.body)
     
     if(validation.error){
         res.send("validation error: ",error.details)
     }
     else{
+        
         let user=await User.findOne({email:email})
         
         if(user){
@@ -61,7 +61,7 @@ exports.login=async(req,res)=>{
                 res.status(200).send(token)
             }
             else{
-                res.send("invalid email or password")
+                res.send("invalid email or password").status(403)
             }
         }
         else{

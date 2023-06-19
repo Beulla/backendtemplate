@@ -3,11 +3,12 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const swaggerUi=require("swagger-ui-express")
 const app = express();
+const cors=require("cors")
 
 const path = require('path');
 const swaggerDocument = require(path.join(__dirname, 'swagger_output.json'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
+app.use(cors())
 
 //------------ DB Configuration ------------//
 const db = require('./config/key').MongoURI;

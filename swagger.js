@@ -11,7 +11,7 @@ const doc = {
     version: '1.0.0',
   },
   host: 'localhost:4000',
-  basePath: '/',
+  basePath: '/auth',
   schemes: ['http'], 
   consumes: ['application/json'],
   produces: ['application/json'],
