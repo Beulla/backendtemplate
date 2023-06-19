@@ -20,7 +20,7 @@ exports.register=async(req,res)=>{
         } else {
             let user=await User.findOne({email:email})
             if(user){
-                res.status(200).send("user already exists")
+                res.status(200).send("Email isn't available for use")
             }
             else{
                 const salt=bcrypt.genSaltSync(10)
