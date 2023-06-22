@@ -6,7 +6,10 @@
     "version": "1.0.0"
   },
   "host": "localhost:4000",
-  "basePath": "/auth",
+  "basePath": [
+    "/auth",
+    "/employees"
+  ],
   "schemes": [
     "http"
   ],
@@ -19,7 +22,7 @@
   "paths": {
     "/register": {
       "post": {
-        "description": "create account",
+        "description": "",
         "parameters": [
           {
             "name": "body",
@@ -27,14 +30,35 @@
             "schema": {
               "type": "object",
               "properties": {
-                "username": {
-                  "example": "Beulla"
+                "firstname": {
+                  "example": "any"
                 },
-                "password": {
-                  "example": "increment"
+                "lastname": {
+                  "example": "any"
+                },
+                "nationalId": {
+                  "example": "any"
+                },
+                "phoneNumber": {
+                  "example": "any"
                 },
                 "email": {
-                  "example": "beullaruge@gmail.com"
+                  "example": "any"
+                },
+                "department": {
+                  "example": "any"
+                },
+                "position": {
+                  "example": "any"
+                },
+                "laptopManufacture": {
+                  "example": "any"
+                },
+                "model": {
+                  "example": "any"
+                },
+                "serialNumber": {
+                  "example": "any"
                 }
               }
             }
@@ -49,7 +73,7 @@
     },
     "/login": {
       "post": {
-        "description": "login to account",
+        "description": "",
         "parameters": [
           {
             "name": "body",
@@ -57,7 +81,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "email": {
+                "username": {
                   "example": "any"
                 },
                 "password": {
@@ -74,25 +98,13 @@
         }
       }
     },
-    "/protected": {
+    "/list": {
       "get": {
         "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
           }
         }
       }

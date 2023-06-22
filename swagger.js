@@ -2,7 +2,7 @@ const swaggerAutogen = require('swagger-autogen')();
 
 
 const outputFile = './swagger_output.json';
-const authRoutes =["./routes/authRoutes.js"]
+const authRoutes =["./routes/authRoutes.js","./routes/employeeRoutes.js"]
 
 const doc = {
   info: {
@@ -11,7 +11,7 @@ const doc = {
     version: '1.0.0',
   },
   host: 'localhost:4000',
-  basePath: '/auth',
+  basePath: ['/auth','/employees'],
   schemes: ['http'], 
   consumes: ['application/json'],
   produces: ['application/json'],

@@ -1,76 +1,38 @@
-const User=require("../model/user")
 const jwt = require("jsonwebtoken")
-const Joi=require("joi")
-const bcrypt=require("bcrypt")
-const userSchema = Joi.object({
-    username: Joi.string().required(),
-    email: Joi.string().email().required(),
-    password: Joi.string().min(8).max(120).required()
-  });
-const schema=Joi.object({
-    email: Joi.string().required(),
-    password: Joi.string().min(8).max(120).required()
+const mysql=require("mysql2")
+const con=mysql.createConnection({
+    host:"localhost",
+    user:"root",
+    password:"#Increaseby2.",
+    database:"nationalexam"
 })
-exports.register=async(req,res)=>{
-    const {username,password,email}=req.body
-    const validationResults=userSchema.validate(req.body)
-    
-        if (validationResults.error) {
-          console.error('Validation error:', error.details);
-        } else {
-            let user=await User.findOne({email:email})
-            if(user){
-                res.status(200).send("Email isn't available for use")
-            }
-            else{
-                const salt=bcrypt.genSaltSync(10)
-                const hashedPassword=bcrypt.hashSync(password,salt)
-                const newUser=new User({
-                    username,
-                    email,
-                    password:hashedPassword
-                })
-                await newUser.save().then(()=>{
-                    res.status(200).send("account created successfully")
-                })
-                .catch((err)=>{
-                    res.send(err.message)
-                })
-            }
-        }
+exports.registerAdmin=(req,res)=>{
+        const {names,username,password}=req.body
+        
+        con.connect(function(err){
+            if(err) throw err;
+            console.log("connected")
+                con.query(`insert into admins (names,username,password) values('${names}','${username}','${password}')`,(err,result) => {
+                    if (err) throw err
+                    res.status(200).send("successfully registered admin")
+                }
+                    )
+                  
+            })
     ;
 }
-
-exports.login=async(req,res)=>{
-    const {email,password}=req.body
-    const validation=schema.validate(req.body)
-    
-    if(validation.error){
-        res.send("validation error: ",error.details)
-    }
-    else{
-        
-        let user=await User.findOne({email:email})
-        
-        if(user){
-            const verifyPassword=bcrypt.compareSync(password,user.password)
-            if(verifyPassword){
-                const secret="this secret key"
-                const payload = { email:email, username: user.username };
-                const token = jwt.sign(payload, secret, { expiresIn: '24h' });
-                res.status(200).send(token)
-            }
-            else{
-                res.send("invalid email or password").status(403)
-            }
-        }
+exports.login=(req,res)=>{
+    const{username,password}=req.body
+    con.query(`select *from admins where username='${username}' and password='${password}';`,(err,result)=>{
+        if(err) throw err;
         else{
-            res.send("user doesn't exist")
+            const secretKey = 'your-secret-key';
+            const token = jwt.sign({ username, password }, secretKey, {
+              expiresIn: '24h'
+            });
+            res.status(200).send(token)
         }
-    }
-}
-exports.page=(req,res)=>{
-    res.send("welcome here")
+    })
 }
 
 
